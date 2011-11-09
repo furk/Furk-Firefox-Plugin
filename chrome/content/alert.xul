@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<overlay
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script src="alert.js" />
+    <box insertafter="alertBox" collapsed="true">
+        <vbox>
+            <image id="ss1" />
+            <image id="ss2" />
+            <image id="ss3" />
+        </vbox>
+    </box>
+
+</overlay>

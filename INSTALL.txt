@@ -1,0 +1,2 @@
+run ./build.sh 
+open furkuploader.xpi using Firefox

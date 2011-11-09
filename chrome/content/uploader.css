@@ -1,0 +1,15 @@
+#furk-toolbar-icon {
+    list-style-image: url("chrome://furkuploader/content/icon16x16g.png");
+}
+
+#furk-toolbar-icon.active, #furk-upload {
+    list-style-image: url("chrome://furkuploader/content/icon16x16.png") !important;
+}
+
+#furk-toolbar-icon.loader {
+    list-style-image: url("chrome://furkuploader/content/loader.gif") !important;
+}
+
+#furk-info {
+    overflow: hidden;
+}

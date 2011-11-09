@@ -1,0 +1,10 @@
+Furk.net plugin for Firefox
+
+Features:
+* Shows screenshots and other media info on any torrent site
+* Shows Info, Download and Play buttons
+* Notifys about fake video torrents and torrents with viruses
+
+Notes: 
+* By default the plugin process requests only for top10 BitTorrent sites. Turn it on for all sites in Settings.
+* All the information is provided by open API from furk.net. https://www.furk.net/t/api

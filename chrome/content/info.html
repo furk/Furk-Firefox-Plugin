@@ -1,0 +1,110 @@
+<html>
+<head>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font: small sans-serif;
+        }
+        body {
+            border-top: 1px solid #CCC;
+        }
+
+        #ss {
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #ss img {
+            margin: auto;
+            height: 100%;
+        }
+
+        #info {
+            margin-right: 205px;
+            text-align: left;
+            background: url("http://www.furk.net/favicon.ico") no-repeat 2px 0 transparent;
+            min-height: 48px;
+            padding: 4px 2px 2px 50px;
+            white-space: pre-wrap;
+        }
+
+        #buttons {
+            position: absolute;
+            right: 0;
+            text-align: right;
+        }
+
+        #button-close {
+            height: 31px;
+            width: 30px;
+            background: url(chrome://furkuploader/content/close.png) no-repeat transparent;
+            position: absolute;
+            right: 2px;
+            top: 2px;
+            display: block;
+            opacity: 0.5;
+        }
+        #button-close:hover {
+            opacity: 1;
+        }
+
+        /* NOTE all following styles from furk.net */
+        .button-large {
+            font-size: large;
+            font-weight: bold;
+            color: #fff;
+            background-color: #069f00;
+            padding: 4px 12px 4px 12px;
+            border: 2px solid #ccc;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            line-height: 200%;
+        }
+
+        .button-large:hover {
+            text-decoration: underline;
+            background-color: #238bce;
+            color: #fff;
+        }
+
+        /* FF wants this */
+        .button-large, input[type="submit"].button-large, input[type="button"].button-large, input[type="file"].button-large {
+            text-decoration: none;
+            background-color: #069f00;
+            color: #fff;
+        }
+        /* FF wants this */
+        .button-large:hover , input[type="submit"].button-large:hover, input[type="button"].button-large:hover, input[type="file"].button-large:hover {
+            text-decoration: underline;
+            background-color: #238bce;
+            color: #fff;
+        }
+        .button-play { 
+            color: #fff;
+            background-color: #238bce;
+            border-color: #ccc;
+        }
+    </style>
+    <script src="info.js"></script>
+</head>
+<body>
+    <a id="button-close" href="#" onclick="closeInfoBar();return false;"></a>
+    <div id="ss">
+        <!-- TODO add buttons to scroll images -->
+        <img />
+    </div>
+    <div id="info"></div>
+    <div id="buttons">
+        <a id="binfo" onclick="openLink(this);return false;" class="button-large button-download" href="">Info</a>
+        <a id="bdownload" onclick="openLink(this);return false;" class="button-large button-download" href="">Download</a>
+        <a id="bplay" onclick="openLink(this);return false;" class="button-large button-play" href="">Play</a>
+    </div>
+</body>
+</html>
+

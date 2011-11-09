@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<overlay
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script src="chrome://furkuploader/content/saveas.js"/>
+
+    <radiogroup id="mode">
+        <vbox insertbefore="save" id="furkuploaderSaveAsContaner" collapsed="true" flex="2">
+            <hbox>
+                <radio id="furUploaderDownloadRadioButton"
+                       disabled="false" />
+                <image src="chrome://furkuploader/content/icon.png" />
+            </hbox>
+        </vbox>
+    </radiogroup>
+
+</overlay>

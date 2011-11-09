@@ -1,0 +1,7 @@
+content     furkuploader    chrome/content/
+overlay     chrome://browser/content/browser.xul chrome://furkuploader/content/uploader.xul
+style       chrome://browser/content/browser.xul chrome://furkuploader/content/uploader.css
+
+overlay     chrome://mozapps/content/downloads/unknownContentType.xul   chrome://furkuploader/content/saveas.xul
+
+overlay     chrome://global/content/alerts/alert.xul chrome://furkuploader/content/alert.xul

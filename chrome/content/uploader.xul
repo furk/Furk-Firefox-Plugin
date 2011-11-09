@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<overlay id="uploader"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <script src="chrome://furkuploader/content/uploader.js" />
+    <script src="chrome://furkuploader/content/adapters.js" />
+    <!-- add context menu item -->
+    <popup id="contentAreaContextMenu">
+        <menuitem oncommand="furkUploader.upload();"
+            insertafter="context-sendlink" id="furk-upload" class="menuitem-iconic" />
+    </popup>
+    <!-- add toolbar button -->
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="furk-toolbar-icon" onclick="furkUploader.openFilesList(event);" />
+    </toolbarpalette>
+    <vbox id="appcontent">
+        <browser id="furk-info"
+                 type="chrome"
+                 flex="1"
+                 insertafter="content"
+                 height="115" maxheight="115" minheight="115"
+                 clientheight="115" scrollheight="115"
+                 disablehistory="true" collapsed="true" />
+    </vbox>
+
+    <!-- -->
+    <stringbundleset id="stringbundleset">
+        <stringbundle id="furkMessages" src="chrome://furkuploader/content/messages.properties"/>
+    </stringbundleset>
+
+</overlay>
