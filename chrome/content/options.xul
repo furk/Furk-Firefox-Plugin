@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<prefwindow id="furkUploaderPreferences"
+            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script src="options.js"></script>
+
+  <prefpane id="pane1" label="furk prefs">
+    <preferences>
+      <preference id="option-ssl" name="extensions.furkuploader.option_ssl" type="bool" />
+      <preference id="option-parse-sites" name="extensions.furkuploader.option_parse_sites" type="string" />
+      <preference id="option-parse-sites-list" name="extensions.furkuploader.option_parse_sites_list" type="string" />
+    </preferences>
+
+    <vbox>
+        <label control="radio-parse-sites" id="radio-parse-sites-label" />
+        <radiogroup id="radio-parse-sites" preference="option-parse-sites">
+            <hbox>
+                <radio value="none" label="none" onclick="toogleList(this.value);"/>
+                <radio value="list" label="list" onclick="toogleList(this.value);"/>
+                <radio value="all" label="all" onclick="toogleList(this.value);"/>
+            </hbox>
+        </radiogroup>
+    </vbox>
+
+    <vbox>
+        <label control="textbox-parse-sites-list" id="textbox-parse-sites-list-label"/>
+        <textbox multiline="true" rows="10" id="textbox-parse-sites-list" preference="option-parse-sites-list" />
+    </vbox>
+
+    <!-- TODO unhide when sertificate be ready -->
+    <checkbox id="checkbox-ssl" preference="option-ssl" collapsed="true" />
+
+  </prefpane>
+
+  <!--<prefpane id="pane2" label="&pane2.title;" src="chrome://uri/to/pane.xul"/>-->
+</prefwindow>
