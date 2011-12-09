@@ -27,7 +27,7 @@ window.addEventListener('load', function(){
     }
 
     // set title for close button
-    $('button-close').title = furkUploader.messages.getString('click_to_close_bar');
+    //$('button-close').title = furkUploader.messages.getString('click_to_close_bar');
 
     //browserWindow.Firebug.Console.log(document.getElementById('ss'));
 
@@ -58,12 +58,12 @@ window.addEventListener('load', function(){
         $('info').innerHTML = desc;
 
         // set button links
-        $('binfo').style.display = 'none';
+        //$('binfo').style.display = 'none';
+        $('binfo').href = info.url_page; // allways show
         $('bdownload').style.display = 'none';
         $('bplay').style.display = 'none';
         if(info.status != 'fake') {
             $('binfo').style.display = '';
-            $('binfo').href = info.url_page;
             $('bdownload').style.display = '';
             $('bdownload').href = info.url_dl;
             if(info.type == 'video') {
@@ -83,9 +83,7 @@ window.addEventListener('load', function(){
             furkUploader.infoBrowser.clientHeight =
             furkUploader.infoBrowser.scrollHeight = (h + 55) + 'px';
 
-
-
         furkUploader.infoBrowser.collapsed = false;
-    });
+    }, browserWindow.gBrowser.selectedBrowser.contentDocument.location.href);
 
-});
+}, true);

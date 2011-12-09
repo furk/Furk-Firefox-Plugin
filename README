@@ -1,10 +1,20 @@
 Furk.net plugin for Firefox
 
 Features:
+* Uploads .torrent files to furk.net and notifies when torrent is HTTP ready
 * Shows screenshots and other media info on any torrent site
 * Shows Info, Download and Play buttons
 * Notifys about fake video torrents and torrents with viruses
 
-Notes: 
+Notes:
 * By default the plugin process requests only for top10 BitTorrent sites. Turn it on for all sites in Settings.
 * All the information is provided by open API from furk.net. https://www.furk.net/t/api
+
+How it works:
+* Torrent upload to furk.net: click the download link as you normally do and choose 'Upload to Furk.net'. When torrent will be HTTP ready you'll be notified by this plugin and email.
+* Screenshots and codecs info: the page url and page inline links are parsed and if they contain info_hash in any form (magnet, dht or http links) then a special icon is displayed near such links. The icon is displayed only if furk.net has any information about torrent. For the first info_hash an information panel is displayed in the bottom of the page.
+
+Repository:
+https://github.com/furk/Furk-Firefox-Plugin
+
+

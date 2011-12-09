@@ -7,7 +7,7 @@ window.addEventListener('load', function(e) {
 
     // set label message
     document.getElementById('furUploaderDownloadRadioButton').label =
-                browserWindow.furkUploader.messages.getString('uploadtofurk');
+                browserWindow.furkUploader.messages.getString('upload_to_furk');
 
     // download only torrent files
     // and only when extension status is true (logged in)

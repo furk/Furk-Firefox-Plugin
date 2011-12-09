@@ -5,11 +5,15 @@ window.addEventListener('load', function(e){
     var browserWindow = wm.getMostRecentWindow("navigator:browser");
     var furkUploader = browserWindow.furkUploader;
 
+    // set window title
+    window.title = furkUploader.messages.getString('furk_uploader') + ' preferences';
+
     // set lables from messages.properties
     var labelsMap = {
-        'checkbox-ssl': 'option_ssl_label',
         'radio-parse-sites-label': 'option_parse_sites',
-        'textbox-parse-sites-list-label': 'option_parse_sites_list'
+        'textbox-parse-sites-list-label': 'option_parse_sites_list',
+        'checkbox-show-infobar': 'option_show_infobar',
+        'checkbox-ssl': 'option_ssl_label'
     };
     for(var i in labelsMap) {
         document.getElementById(i)[i.substr(-5) == 'label' ? 'value' : 'label'] = furkUploader.messages.getString(labelsMap[i]);

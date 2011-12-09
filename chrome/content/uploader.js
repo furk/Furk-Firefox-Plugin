@@ -21,6 +21,11 @@ furkUploader = {
         // string bundle object. allow to format messages
         furkUploader.messages = document.getElementById('furkMessages');
 
+        // set protocol from options
+        if(furkUploader.prefs.getBoolPref('option_ssl')) {
+            this.protocol = 'https';
+        }
+
         // check uploaded files
         furkUploader.checkUploadedFiles();
         // check uploaded times every 1 minute
@@ -33,8 +38,11 @@ furkUploader = {
         furkUploader.changeStatus(false);
 
         // append messages
-        document.getElementById('furk-toolbar-icon').label = furkUploader.messages.getString('furkuploader');
-        document.getElementById("furk-upload").label = furkUploader.messages.getString('uploadtofurk');
+        var b = document.getElementById('furk-toolbar-icon');
+        if(b) {
+            b.label = furkUploader.messages.getString('furk_uploader');
+            b.label = furkUploader.messages.getString('upload_to_furk');
+        }
     },
 
     // change extension status (logged in or NO)
@@ -47,11 +55,11 @@ furkUploader = {
         furkUploader._toggleClassName(button, 'active', status);
 
         if(furkUploader.status) {
-            button.tooltipText = furkUploader.messages.getString('clicktoshowfinished');
+            button && (button.tooltipText = furkUploader.messages.getString('click_to_show_finished'));
             // remove callback that runs on every page loads
             gBrowser.removeEventListener("load", furkUploader.checkPageLoad, true);
         } else {
-            button.tooltipText = furkUploader.messages.getString('clicktologin');
+            button && (button.tooltipText = furkUploader.messages.getString('click_to_login'));
             // Add a callback to be run every time a document loads.
             // note that this includes frames/iframes within the document
             gBrowser.addEventListener("load", furkUploader.checkPageLoad, true);
@@ -61,6 +69,7 @@ furkUploader = {
 
     // for internal usage only
     _toggleClassName: function(el, name, status) {
+        if(!el) return;
         var cl = el.className;
         if(status == undefined) {
             status = !(cl.split(name).length > 1);
@@ -129,7 +138,7 @@ furkUploader = {
             // can't download file
             // remove loading icon
             furkUploader._toggleClassName(document.getElementById('furk-toolbar-icon'), 'loader', false);
-            furkUploader.notify('Error', furkUploader.messages.getString('cantdownloadfile'));
+            furkUploader.notify('Error', furkUploader.messages.getString('cant_download_file'));
             return;
         }
 
@@ -153,16 +162,16 @@ furkUploader = {
         furkUploader._xhr('://api.furk.net/api/add_tor', {b:b, post: pdata}, function(r){
             if(r.torrent.dl_status == 'finished' && r.file) {
                 //furkUploader.info[r.file.url_page] = r.file;
-                furkUploader.notify(furkUploader.messages.getString('torrentisready'),
+                furkUploader.notify(furkUploader.messages.getString('torrent_is_ready'),
                         r.torrent.name, r.file.url_page);
             } else {
-                furkUploader.notify(furkUploader.messages.getString('successupload'),
+                furkUploader.notify(furkUploader.messages.getString('success_upload'),
                         r.torrent.name);
             }
-        });
+        }, url);
     },
 
-    _xhr: function(url, data, callback) {
+    _xhr: function(url, data, callback, referer) {
         var xhr = new XMLHttpRequest();
         xhr.open(data ? 'POST' : 'GET', furkUploader.protocol + url, true);
         xhr.onload = function(e) {
@@ -174,7 +183,7 @@ furkUploader = {
                     try {
                         r = JSON.parse(xhr.responseText);
                     } catch(e) {
-                        furkUploader.notify('Error', furkUploader.messages.getString('wrongjson'));
+                        furkUploader.notify('Error', furkUploader.messages.getString('wrong_json'));
                     }
                     if(!r) return;
 
@@ -196,6 +205,7 @@ furkUploader = {
                 }
             }
         };
+        referer && xhr.setRequestHeader('Referer', referer);
         if(data) {
             xhr.setRequestHeader('Content-Length', data.post.length);
             xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + data.b);
@@ -228,7 +238,7 @@ furkUploader = {
     // display notification about completed torrent
     displayNotification: function(data) {
 
-        furkUploader.notify(furkUploader.message.getString('torrentisready'), data.name, data.url_page);
+        furkUploader.notify(furkUploader.message.getString('torrent_is_ready'), data.name, data.url_page);
 
     },
 
@@ -352,7 +362,7 @@ furkUploader = {
         }
     },
 
-    getFileInfo: function(hashes, callback) {
+    getFileInfo: function(hashes, callback, referer) {
         var retArray = true;
         if(!(hashes instanceof Array)) {
             hashes = [hashes];
@@ -372,7 +382,7 @@ furkUploader = {
                     furkUploader.info[r.files[i].info_hash.toUpperCase()] = r.files[i];
                 }
                 callback(retArray ? furkUploader.info : furkUploader.info[hash.toUpperCase()]);
-            });
+            }, referer);
         } else {
             callback(retArray ? furkUploader.info : furkUploader.info[hash.toUpperCase()]);
         }
@@ -381,21 +391,30 @@ furkUploader = {
 };
 
 window.addEventListener("load", function() {
-    // add icon on toolbar if not added
-    var navBar = document.getElementById("nav-bar");
-    if (navBar) {
-        var curSet = navBar.currentSet.split(",");
-        if (curSet.indexOf('furk-toolbar-icon') === -1) {
-            var pos = curSet.indexOf("urlbar-container") + 1 || curSet.length;
-            var set = curSet.slice(0, pos).concat("furk-toolbar-icon").
-                concat(curSet.slice(pos));
-            navBar.setAttribute("currentset", set.join(","));
-            navBar.currentSet = set.join(",");
-            document.persist(navBar.id, "currentset");
-            try {
-                BrowserToolboxCustomizeDone(true);
-            } catch (e) {}
+
+    furkUploader.init();
+
+    var firstRun = furkUploader.prefs.getBoolPref('firstrun');
+    if (firstRun) {
+
+        // add icon on toolbar if not added
+        var navBar = document.getElementById("nav-bar");
+        if (navBar) {
+            var curSet = navBar.currentSet.split(",");
+            if (curSet.indexOf('furk-toolbar-icon') === -1) {
+                var pos = curSet.indexOf("urlbar-container") + 1 || curSet.length;
+                var set = curSet.slice(0, pos).concat("furk-toolbar-icon").
+                    concat(curSet.slice(pos));
+                navBar.setAttribute("currentset", set.join(","));
+                navBar.currentSet = set.join(",");
+                document.persist(navBar.id, "currentset");
+                try {
+                    BrowserToolboxCustomizeDone(true);
+                } catch (e) {}
+            }
         }
+
+        furkUploader.prefs.setBoolPref('firstrun', false)
     }
 
     // check context menu visibility
@@ -404,43 +423,86 @@ window.addEventListener("load", function() {
         contextMenu.addEventListener("popupshowing", furkUploader.checkContextMenu, false);
     }
 
-    furkUploader.init();
-
     // ADD info bar at the bottom
 
     // TODO move following into object below
     furkUploader.showInfoBrowser = function(hash) {
-        furkUploader.infoBrowser.loadURI('chrome://furkuploader/content/info.html?' + hash);
+        if(furkUploader.prefs.getBoolPref('option_show_infobar')) {
+            furkUploader.infoBrowser.loadURI('chrome://furkuploader/content/info.html?' + hash);
+        }
     };
     furkUploader.infoBrowser = document.getElementById('furk-info');
     // tab changed
     function reloadInfoBrowser(e){
-        if(!furkUploader.status) {
-            // do nothing
-            return;
-        }
+        // should we parse ?
+        var parse = furkUploader.prefs.getCharPref('option_parse_sites');
+        // current page
         var browser = gBrowser.selectedBrowser;
         // hide info browser
         furkUploader.infoBrowser.collapsed = true;
-        for(var i in furkUploader.adapters) {
-            // check url
-            if(browser.contentDocument.location.host == i || browser.contentDocument.location.host == 'www.' + i) {
-                for(var r in furkUploader.adapters[i]) {
-                    if((new RegExp(r, 'gi')).test(browser.contentDocument.location.pathname)) {
-                        furkUploader.adapters[i][r](browser.contentDocument);
+
+        // check should we do anything
+        if(!furkUploader.status || parse == 'none' ||
+                    browser.contentDocument.location.host == 'furk.net' ||
+                    browser.contentDocument.location.host == 'www.furk.net') {
+            // do nothing
+            return;
+        }
+
+        if(parse == 'all') {
+            for(var i in furkUploader.adapters) {
+                //Firebug.Console.log(i);
+                if(browser.contentDocument.location.host == i || browser.contentDocument.location.host == 'www.' + i) {
+                    for(var r in furkUploader.adapters[i]) {
+                        if((new RegExp(r, 'gi')).test(browser.contentDocument.location.pathname)) {
+                            furkUploader.adapters[i][r](browser.contentDocument);
+                        }
                     }
+                    // parsed, so return
+                    return;
                 }
-                // adapter found, so return
-                return;
+            }
+            furkUploader.appendFurkLinks(browser.contentDocument, null, null, true);
+        } else {
+            var parseList = furkUploader.prefs.getCharPref('option_parse_sites_list').split('\n');
+            //Firebug.Console.log(parseList);
+            for(var i=0; i<parseList.length; i++) {
+                var site = parseList[i];
+                //Firebug.Console.log(site);
+                // check url
+                if(browser.contentDocument.location.host == site || browser.contentDocument.location.host == 'www.' + site) {
+                    if(furkUploader.adapters[site]) {
+                        for(var r in furkUploader.adapters[site]) {
+                            if((new RegExp(r, 'gi')).test(browser.contentDocument.location.pathname)) {
+                                furkUploader.adapters[site][r](browser.contentDocument);
+                            }
+                        }
+                    } else {
+                        furkUploader.appendFurkLinks(browser.contentDocument, null, null, true);
+                    }
+                    // parsed, so return
+                    return;
+                }
             }
         }
     }
     // show/hide info bar on tab change
     gBrowser.tabContainer.addEventListener("TabSelect", reloadInfoBrowser, false);
 
+    //reloadInfoBrowser();
+    //alert('x');
+    /*gBrowser.selectedBrowser.contentDocument.onreadystatechange = function(e) {
+        if (gBrowser.selectedBrowser.contentDocument.readyState == "complete") {
+            alert('ss');
+        }
+    };/**/
+    //alert(gBrowser.selectedBrowser);
+    //Firebug.Console.log(gBrowser.selectedBrowser);
+
     // show/hide info bar on first browser load and on navigation in a tab
     gBrowser.addEventListener('load', function(e){
-        if(!e.originalTarget.defaultView.frameElement && gBrowser.selectedBrowser.contentDocument == e.originalTarget) {
+        //Firebug.Console.log(e);
+        if(e.originalTarget.defaultView && !e.originalTarget.defaultView.frameElement && gBrowser.selectedBrowser.contentDocument == e.originalTarget) {
             reloadInfoBrowser(e);
         }
     }, true);
